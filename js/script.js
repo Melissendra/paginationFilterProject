@@ -1,22 +1,24 @@
-/******************************************
-Treehouse Techdegree:
-FSJS project 2 - List Filter and Pagination
-******************************************/
-   
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
+// we create this event listener so we don't care where is the script tag link in the html file
+document.addEventListener("DOMContentLoaded", () => {
+    // global variables for the project
+    const studentList = document.querySelectorAll(".student-item");
+    const nbrItems = 10;
 
+    const showPage = (list, page) => {
+        const startIndex = (page * nbrItems) - nbrItems;
+        const endIndex = (page - nbrItems) - 1;
 
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
+        for(let i = 0; i < list.length; i++){
+            if(i >= startIndex && i < endIndex){
+                list[i].style.display = '';
+            }else {
+                list[i].style.display = 'none';
+            }
+        }
+    };
 
+    showPage(studentList,1);
+});
 
 
 
