@@ -4,9 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const studentList = document.querySelectorAll(".student-item");
     const nbrItems = 10;
 
+    //Function to determine how many students we want per page
     const showPage = (list, page) => {
         const startIndex = (page * nbrItems) - nbrItems;
-        const endIndex = (page - nbrItems) - 1;
+        const endIndex = page * nbrItems;
 
         for(let i = 0; i < list.length; i++){
             if(i >= startIndex && i < endIndex){
@@ -17,25 +18,50 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    const appendPageLinks = (list) => {
+        const createElement = (elementName, prop, value) => {
+            const element = document.createElement(elementName);
+            element[prop] = value;
+            return element;
+        };
+
+        const totalPages = Math.ceil(studentList.length / nbrItems);
+        const page = document.querySelector('.page');
+        const pageDiv = createElement('div', 'className', 'pagination');
+
+
+        const pageUl = createElement('ul');
+
+        for(let i = 0; i < totalPages; i++){
+            let pageNumber = i + 1;
+            const pageLi = createElement('li');
+            const pageLink = createElement('a', 'textContent', pageNumber);
+
+            if(pageNumber === 1){
+                pageLink.className = 'active';
+            }
+
+            pageLink.addEventListener('click', (e)=> {
+                const clickedLink = e.target;
+                const nbrPage = parseInt(clickedLink.textContent);
+                const activeLink = document.querySelector('.active');
+
+                activeLink.className = '';
+                clickedLink.className = 'active';
+
+                showPage(studentList, nbrPage);
+            });
+            pageLi.appendChild(pageLink);
+            pageUl.appendChild(pageLi);
+        }
+        pageDiv.appendChild(pageUl);
+        page.appendChild(pageDiv);
+    };
+
     showPage(studentList,1);
+    appendPageLinks(studentList);
 });
 
-
-
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
-
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
 
 
 
