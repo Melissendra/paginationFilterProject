@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const studentList = document.querySelectorAll(".student-item");
     const nbrItems = 10;
 
+    //function to create elements
+    const createElement = (elementName, prop, value) => {
+        const element = document.createElement(elementName);
+        element[prop] = value;
+        return element;
+    };
+
     //Function to determine how many students we want per page
     const showPage = (list, page) => {
         const startIndex = (page * nbrItems) - nbrItems;
@@ -20,13 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //function creating pages buttons dynamically
     const appendPageLinks = (list) => {
-        //function to create elements
-        const createElement = (elementName, prop, value) => {
-            const element = document.createElement(elementName);
-            element[prop] = value;
-            return element;
-        };
-
         const totalPages = Math.ceil(studentList.length / nbrItems);
         const page = document.querySelector('.page');
         const pageDiv = createElement('div', 'className', 'pagination');
@@ -61,6 +61,28 @@ document.addEventListener("DOMContentLoaded", () => {
         page.appendChild(pageDiv);
     };
 
+    // Creation of the search input
+    const searchForm = () => {
+        const header = document.querySelector(".page-header");
+        const searchDiv = createElement('div', 'className', 'student-search');
+        const searchInput = createElement('input', 'type', 'text');
+        searchInput.placeholder = "Search for students...";
+        const searchButton = createElement('button', 'textContent', 'search');
+        const userInput = searchInput.value.toLowerCase();
+
+        searchDiv.appendChild(searchInput);
+        searchDiv.appendChild(searchButton);
+        header.appendChild(searchDiv);
+
+        searchButton.addEventListener('click', () => {
+            for(let i = 0; i < studentList.length; i++){
+
+        });
+    };
+
     showPage(studentList,1);
+    searchForm();
     appendPageLinks(studentList);
 });
+
+
