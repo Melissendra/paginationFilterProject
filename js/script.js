@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // global variables for the project
     const studentList = document.querySelectorAll(".student-item");
     const nbrItems = 10;
+    const page = document.querySelector('.page');
 
     //function to create elements
     const createElement = (elementName, prop, value) => {
@@ -28,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //function creating pages buttons dynamically
     const appendPageLinks = (list) => {
         const totalPages = Math.ceil(studentList.length / nbrItems);
-        const page = document.querySelector('.page');
         const pageDiv = createElement('div', 'className', 'pagination');
         const pageUl = createElement('ul');
 
@@ -68,21 +68,62 @@ document.addEventListener("DOMContentLoaded", () => {
         const searchInput = createElement('input', 'type', 'text');
         searchInput.placeholder = "Search for students...";
         const searchButton = createElement('button', 'textContent', 'search');
-        const userInput = searchInput.value.toLowerCase();
+
 
         searchDiv.appendChild(searchInput);
         searchDiv.appendChild(searchButton);
         header.appendChild(searchDiv);
 
-        searchButton.addEventListener('click', () => {
-            for(let i = 0; i < studentList.length; i++){
-
+        searchButton.addEventListener('click', (e) =>{
+            e.preventDefault();
+            search(searchInput);
         });
-    };
+
+        searchInput.addEventListener("keyup", (e) =>{
+            e.preventDefault();
+            search(searchInput);
+        });
+
+    }
+
+    const search = (searchInput) => {
+        const noResult = createElement('div', 'textContent', 'No result');
+        const students = document.querySelectorAll('.student-item');
+        const userInput = searchInput.value.toLowerCase();
+        let results = [];
+
+        for(let i = 0; i < students.length; i++){
+            const listResult = students[i].querySelector("h3");
+            const textValue = listResult.textContent.toLowerCase();
+            if(textValue.includes(userInput)){
+                students[i].style.display = '';
+                results.push(students[i]);
+            }else{
+                students[i].style.display ='none';
+            }
+        }
+
+        if(results.length === 0){
+            noResult.textContent = 'No result';
+            page.appendChild(noResult);
+        }
+        restore(results);
+    }
+
+    const restore = (results) => {
+        const pageLinks = document.querySelector('.pagination');
+        page.removeChild(pageLinks);
+        showPage(results,1);
+        appendPageLinks(results)
+    }
+
 
     showPage(studentList,1);
     searchForm();
     appendPageLinks(studentList);
 });
+
+
+
 
 
