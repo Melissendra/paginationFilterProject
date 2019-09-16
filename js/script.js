@@ -74,47 +74,64 @@ document.addEventListener("DOMContentLoaded", () => {
         searchDiv.appendChild(searchButton);
         header.appendChild(searchDiv);
 
-        searchButton.addEventListener('click', (e) =>{
-            e.preventDefault();
-            search(searchInput);
+        searchButton.addEventListener('click', () =>{
+            search(searchInput, studentList);
         });
 
-        searchInput.addEventListener("keyup", (e) =>{
-            e.preventDefault();
-            search(searchInput);
+        searchInput.addEventListener("keyup", () =>{
+            search(searchInput, studentList);
         });
 
     }
 
-    const search = (searchInput) => {
-        const noResult = createElement('div', 'textContent', 'No result');
-        const students = document.querySelectorAll('.student-item');
-        const userInput = searchInput.value.toLowerCase();
+    const search = (search, student) => {
+        const userInput = search.value.toLowerCase();
         let results = [];
 
-        for(let i = 0; i < students.length; i++){
-            const listResult = students[i].querySelector("h3");
+        removePageLinks();
+
+        if(!search.value){
+            restore(studentList);
+        }
+
+        for(let i = 0; i < student.length; i++){
+            const listResult = student[i].querySelector("h3");
             const textValue = listResult.textContent.toLowerCase();
             if(textValue.includes(userInput)){
-                students[i].style.display = '';
-                results.push(students[i]);
+                student[i].style.display = '';
+                results.push(student[i]);
             }else{
-                students[i].style.display ='none';
+                student[i].style.display ='none';
             }
         }
 
-        if(results.length === 0){
-            noResult.textContent = 'No result';
+        if(results.length === 0 || userInput === ''){
+            const noResult = createElement("span", "textContent", "");
+            noResult.textContent = "No result found";
             page.appendChild(noResult);
+        }else if(results.length <=  10){
+            showPage(results, 1);
+        }else{
+            showPage(results, 1);
+            appendPageLinks(results);
         }
-        restore(results);
+
+        restore(studentList);
     }
 
     const restore = (results) => {
-        const pageLinks = document.querySelector('.pagination');
-        page.removeChild(pageLinks);
+        const link = document.querySelector('.pagination');
+        page.removeChild(link);
         showPage(results,1);
-        appendPageLinks(results)
+        appendPageLinks(results);
+    }
+
+    const removePageLinks = () => {
+        const pageLinks = document.querySelector('.pagination');
+        if(pageLinks){
+            const parent = pageLinks.parentNode;
+            parent.removeChild(pageLinks);
+        }
     }
 
 
