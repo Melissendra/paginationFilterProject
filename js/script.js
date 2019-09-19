@@ -66,7 +66,7 @@ const appendPageLinks = (list) => {
     page.appendChild(pageDiv);
 };
 
-const searchForm = () => {
+const searchForm = (list) => {
     const header = document.querySelector(".page-header");
     const searchDiv = createElement('div', 'className', 'student-search');
     const searchInput = createElement('input', 'type', 'text');
@@ -84,17 +84,28 @@ const searchForm = () => {
 
     searchButton.addEventListener('click', (e) =>{
         e.preventDefault();
-        search(searchInput, studentList);
+        search(searchInput, list);
     });
 
-    searchInput.addEventListener("keyup", () =>{
-        search(searchInput, studentList);
+    searchInput.addEventListener("keyup", (e) =>{
+        e.preventDefault();
+        const error = document.querySelector(".error");
+        if(e.keyCode === 8 && error){
+            error.parentNode.removeChild(error);
+            search(searchInput, list);
+        }else if(e.keyCode === 27){
+            page.removeChild(error);
+            loadingPage(list);
+            searchForm(list);
+        }else{
+            search(searchInput, list);
+        }
     });
 };
 
-const loadingPage = () => {
-    showPage(studentList, 1);
-    appendPageLinks(studentList);
+const loadingPage = (list) => {
+    showPage(list, 1);
+    appendPageLinks(list);
 }
 
 const search = (search, student) => {
@@ -120,15 +131,14 @@ const search = (search, student) => {
         page.appendChild(noResult);
         appendPageLinks(noResult);
     }else {
-        showPage(results, 1);
-        appendPageLinks(results);
+        loadingPage(results);
     }
 
     if(userInput.length === 0){
         error.parentNode.removeChild(error);
-        loadingPage();
+        loadingPage(student);
     }
 }
 
-loadingPage();
-searchForm();
+loadingPage(studentList);
+searchForm(studentList);
