@@ -11,13 +11,6 @@ const createElement = (elementName, prop, value) => {
     return element;
 };
 
-const errorVerification = (elementName) =>{
-    const element = document.getElementsByClassName(elementName);
-    if(element){
-        element.parentNode.removeChild(elementName);
-    }
-}
-
 //Function to determine how many students we want per page
 const showPage = (list, page) => {
     const startIndex = (page * nbrItems) - nbrItems;
@@ -32,13 +25,17 @@ const showPage = (list, page) => {
     }
 };
 
+
 //function creating pages buttons dynamically
 const appendPageLinks = (list) => {
-    const totalPages = Math.ceil(studentList.length / nbrItems);
+    const totalPages = Math.ceil(list.length / nbrItems);
     const pageDiv = createElement('div', 'className', 'pagination');
     const pageUl = createElement('ul');
 
-    errorVerification('pagination');
+    const pagination = document.querySelector(".pagination");
+    if(pagination){
+        pagination.parentNode.removeChild(pagination);
+    }
 
     //loop to create dynamically our pages links
     for(let i = 0; i < totalPages; i++){
@@ -59,7 +56,7 @@ const appendPageLinks = (list) => {
             activeLink.className = '';
             clickedLink.className = 'active';
 
-            showPage(studentList,nbrPage);
+            showPage(list,nbrPage);
         });
         
         pageLi.appendChild(pageLink);
@@ -76,7 +73,10 @@ const searchForm = () => {
     searchInput.placeholder = "Search for students...";
     const searchButton = createElement('button', 'textContent', 'search');
 
-    errorVerification("student-search");
+    const input = document.querySelector(".student-search");
+    if(input){
+        input.parentNode.removeChild(input);
+    }
 
     searchDiv.appendChild(searchInput);
     searchDiv.appendChild(searchButton);
@@ -92,8 +92,15 @@ const searchForm = () => {
     });
 };
 
+const loadingPage = () => {
+    showPage(studentList, 1);
+    appendPageLinks(studentList);
+}
+
 const search = (search, student) => {
     const userInput = search.value.toLowerCase();
+    const noResult = createElement("span", "className", "error");
+    const error = document.querySelector(".error");
     let results = [];
 
     for(let i = 0; i < student.length; i++){
@@ -103,19 +110,25 @@ const search = (search, student) => {
         if(userInput !== 0 && name.includes(userInput)){
             results.push(student[i]);
         }
+    }
 
-        if(results.length === 0 && userInput.length !== 0){
-            const noResult = createElement("span", "className", "error");
-            errorVerification("error");
-            noResult.textContent = "No result found";
-            page.appendChild(noResult);
-        }else {
-            showPage(results, 1);
-            appendPageLinks(results);
-        }    
+    if(results.length === 0 && userInput.length !== 0){
+        if(error){
+            error.parentNode.removeChild(error);
+        }
+        noResult.textContent = "No result found";
+        page.appendChild(noResult);
+        appendPageLinks(noResult);
+    }else {
+        showPage(results, 1);
+        appendPageLinks(results);
+    }
+
+    if(userInput.length === 0){
+        error.parentNode.removeChild(error);
+        loadingPage();
     }
 }
 
-showPage(studentList, 1);
-appendPageLinks(studentList);
+loadingPage();
 searchForm();
