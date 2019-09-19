@@ -11,6 +11,13 @@ const createElement = (elementName, prop, value) => {
     return element;
 };
 
+const errorVerification = (elementName) =>{
+    const element = document.getElementsByClassName(elementName);
+    if(element){
+        element.parentNode.removeChild(elementName);
+    }
+}
+
 //Function to determine how many students we want per page
 const showPage = (list, page) => {
     const startIndex = (page * nbrItems) - nbrItems;
@@ -31,12 +38,7 @@ const appendPageLinks = (list) => {
     const pageDiv = createElement('div', 'className', 'pagination');
     const pageUl = createElement('ul');
 
-    const pagination = document.querySelector(".pagination");
-
-    //we check if the div with a class pagination exits
-    if(pagination){
-        pagination.parentNode.removeChild(pagination);
-    }
+    errorVerification('pagination');
 
     //loop to create dynamically our pages links
     for(let i = 0; i < totalPages; i++){
@@ -74,10 +76,7 @@ const searchForm = () => {
     searchInput.placeholder = "Search for students...";
     const searchButton = createElement('button', 'textContent', 'search');
 
-    const searchDivClass = document.querySelector(".student-search");
-    if(searchDivClass){
-        searchDivClass.parentNode.removeChild(searchDivClass);
-    }
+    errorVerification("student-search");
 
     searchDiv.appendChild(searchInput);
     searchDiv.appendChild(searchButton);
@@ -88,8 +87,7 @@ const searchForm = () => {
         search(searchInput, studentList);
     });
 
-    searchInput.addEventListener("keyup", (e) =>{
-        e.preventDefault();
+    searchInput.addEventListener("keyup", () =>{
         search(searchInput, studentList);
     });
 };
@@ -108,10 +106,7 @@ const search = (search, student) => {
 
         if(results.length === 0 && userInput.length !== 0){
             const noResult = createElement("span", "className", "error");
-            const error = document.querySelector(".error");
-            if(error){
-                error.parentNode.removeChild(error);
-            }
+            errorVerification("error");
             noResult.textContent = "No result found";
             page.appendChild(noResult);
         }else {
