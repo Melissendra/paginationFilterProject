@@ -66,6 +66,7 @@ const appendPageLinks = (list) => {
     page.appendChild(pageDiv);
 };
 
+//function to add the search input and the event Listener 
 const searchForm = (list) => {
     const header = document.querySelector(".page-header");
     const searchDiv = createElement('div', 'className', 'student-search');
@@ -88,11 +89,14 @@ const searchForm = (list) => {
     });
 
     searchInput.addEventListener("keyup", (e) =>{
-        e.preventDefault();
         const error = document.querySelector(".error");
+
+        //backspace key used
         if(e.keyCode === 8 && error){
-            error.parentNode.removeChild(error);
+            page.removeChild(error);
             search(searchInput, list);
+        
+        //enter key used
         }else if(e.keyCode === 27){
             page.removeChild(error);
             loadingPage(list);
@@ -100,20 +104,24 @@ const searchForm = (list) => {
         }else{
             search(searchInput, list);
         }
+        e.preventDefault();
     });
 };
 
+//function to initiate the page
 const loadingPage = (list) => {
     showPage(list, 1);
     appendPageLinks(list);
 }
 
+//function to setup the name search
 const search = (search, student) => {
     const userInput = search.value.toLowerCase();
     const noResult = createElement("span", "className", "error");
     const error = document.querySelector(".error");
     let results = [];
 
+    //we loop through the list to see if the user input is found in the list
     for(let i = 0; i < student.length; i++){
         student[i].style.display = "none";
         const name = student[i].textContent.toLowerCase();
@@ -123,9 +131,10 @@ const search = (search, student) => {
         }
     }
 
+    //if there's nothing in the result's array or if we don't have any correspondence with the list we have a div error that is created.
     if(results.length === 0 && userInput.length !== 0){
         if(error){
-            error.parentNode.removeChild(error);
+            page.removeChild(error);
         }
         noResult.textContent = "No result found";
         page.appendChild(noResult);
@@ -134,8 +143,9 @@ const search = (search, student) => {
         loadingPage(results);
     }
 
+    //if we have nothing in the search input we reload the pages and erase the error div.
     if(userInput.length === 0){
-        error.parentNode.removeChild(error);
+        page.removeChild(error);
         loadingPage(student);
     }
 }
